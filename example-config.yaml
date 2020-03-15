@@ -1,0 +1,4 @@
+domains:
+  - type: route53
+    tld: henkel.media
+    domain: isso.henkel.media

@@ -6,6 +6,14 @@ pub fn generate_clap_config<'a, 'b>() -> App<'a, 'b> {
         .author("Daniel H. <daniel@henkel.tech>")
         .about("")
         .arg(
+            Arg::with_name("config-path")
+                .short("config")
+                .long("config-path")
+                .help("Path to the configuration file.")
+                .required(true)
+                .takes_value(true),
+        )
+        .arg(
             Arg::with_name("log-file")
                 .short("log")
                 .long("log-file")

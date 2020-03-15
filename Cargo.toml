@@ -9,7 +9,7 @@ edition = "2018"
 [dependencies]
 log = "0.4"
 simplelog = "0.7.4"
-serde = "1.0.104"
+serde = { version = "1.0.104", features = ["derive"] }
 serde_yaml = "0.8.11"
 clap = "2.33.0"
 rusoto_core = "0.42.0"
