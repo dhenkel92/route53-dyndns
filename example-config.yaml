@@ -1,4 +1,4 @@
 domains:
-  - type: route53
+  - provider: aws
     tld: henkel.media
     domain: isso.henkel.media

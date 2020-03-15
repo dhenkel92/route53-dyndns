@@ -5,21 +5,20 @@ use std::path::Path;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Configuration {
-    domains: Vec<Domain>,
+    pub domains: Vec<Domain>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub enum ConfigurationType {
-    #[serde(rename = "route53")]
-    ROUTE53,
+pub enum DomainProvider {
+    #[serde(rename = "aws")]
+    Aws,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Domain {
-    #[serde(rename = "type")]
-    config_type: ConfigurationType,
-    tld: String,
-    domain: String,
+    pub provider: DomainProvider,
+    pub tld: String,
+    pub domain: String,
 }
 
 pub fn load_config(path: &Path) -> Result<Configuration, Box<dyn Error>> {
