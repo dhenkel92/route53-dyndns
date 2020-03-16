@@ -29,14 +29,5 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    // let hosted_zones = route53_adapter.list_hosted_zones()?;
-    // for zone in hosted_zones {
-    //     info!("Found Hosted Zone: {:?} ({})", zone.name, zone.id);
-    //     let record_sets = route53_adapter.list_record_sets(&zone)?;
-    //     for set in record_sets {
-    //         info!("Record set: [{}] {}", set.type_, set.name);
-    //     }
-    // }
-
     Ok(())
 }
