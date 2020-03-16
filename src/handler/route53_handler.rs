@@ -18,7 +18,13 @@ pub fn handle_route53(domain: &Domain) -> HandlerResult {
     let hosted_zone = route53_adapter
         .find_hosted_zone_by_name(&domain.tld)
         .map_err(map_route53_error)?;
+
     let hosted_zone_id = extract_id_from_hz(&hosted_zone);
-    info!("{:?}", hosted_zone_id);
+
+    let record_set = route53_adapter
+        .upsert_record(&hosted_zone_id, &domain.domain, "127.0.0.1")
+        .map_err(map_route53_error)?;
+
+    info!("{:?}", record_set);
     Ok(())
 }

@@ -1,10 +1,13 @@
 use serde::export::Formatter;
 use std::error::Error;
 
+pub type Route53Result<T> = Result<T, Route53Error>;
+
 #[derive(Debug)]
 pub enum Route53Error {
     HostedZoneNotFound,
-    Unknown(String),
+    RecordSetNotFound,
+    LibError(String),
 }
 
 impl Error for Route53Error {}

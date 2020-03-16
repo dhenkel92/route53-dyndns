@@ -1,4 +1,4 @@
 domains:
   - provider: aws
-    tld: henkel.media
-    domain: isso.henkel.media
+    tld: henkel.tech
+    domain: dyndns.henkel.tech
