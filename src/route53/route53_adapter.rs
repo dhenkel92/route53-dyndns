@@ -7,8 +7,8 @@ use rusoto_route53::{
 };
 
 pub struct Route53Adapter<T>
-    where
-        T: Route53,
+where
+    T: Route53,
 {
     route53_client: T,
 }

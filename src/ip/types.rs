@@ -3,7 +3,7 @@ use std::fmt::Formatter;
 
 #[derive(Debug)]
 pub enum IPError {
-    LibError(String)
+    LibError(String),
 }
 
 impl Error for IPError {}

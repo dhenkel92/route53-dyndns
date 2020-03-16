@@ -1,17 +1,17 @@
 mod clap_config;
 mod config;
 mod handler;
+mod ip;
 mod logger;
 mod route53;
-mod ip;
 
 use crate::config::{load_config, DomainProvider};
 use crate::handler::{handle_route53, HandlerError};
+use crate::ip::{fetch_ip, IPError};
 use clap_config::generate_clap_config;
 use logger::initialize_logger;
 use std::error::Error;
 use std::path::Path;
-use crate::ip::{IPError, fetch_ip};
 
 #[macro_use]
 extern crate log;
