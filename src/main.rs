@@ -3,6 +3,7 @@ mod config;
 mod handler;
 mod logger;
 mod route53;
+mod ip;
 
 use crate::config::{load_config, DomainProvider};
 use crate::handler::{handle_route53, HandlerError};
@@ -10,6 +11,7 @@ use clap_config::generate_clap_config;
 use logger::initialize_logger;
 use std::error::Error;
 use std::path::Path;
+use crate::ip::{IPError, fetch_ip};
 
 #[macro_use]
 extern crate log;
@@ -23,6 +25,11 @@ fn log_handler_error(err: HandlerError) {
     error!("{:?}", err);
 }
 
+fn log_ip_error(err: IPError) -> IPError {
+    warn!("{:?}", err);
+    err
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     let matches = generate_clap_config().get_matches();
     initialize_logger(&matches).map_err(log_generic_error)?;
@@ -32,9 +39,12 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     debug!("Configuration: {:?}", configuration);
 
+    let ip = fetch_ip().map_err(log_ip_error)?;
+    debug!("Got IP: {}", &ip);
+
     for domain in configuration.domains {
         let _ = match domain.provider {
-            DomainProvider::Aws => handle_route53(&domain).map_err(log_handler_error),
+            DomainProvider::Aws => handle_route53(&ip, &domain).map_err(log_handler_error),
         };
     }
 
