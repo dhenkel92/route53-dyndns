@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Unit Tests
-        run: cargo test
+        run: CARGO_HUSKY_DONT_INSTALL_HOOKS=true cargo test
   build:
     name: Build & Push
     runs-on: ubuntu-latest
