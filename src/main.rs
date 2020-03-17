@@ -1,3 +1,5 @@
+#![cfg_attr(feature = "strict", deny(warnings))]
+
 mod clap_config;
 mod config;
 mod handler;
