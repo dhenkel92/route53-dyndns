@@ -30,7 +30,8 @@ fn log_ip_error(err: IPError) -> IPError {
     err
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn Error>> {
     let matches = generate_clap_config().get_matches();
     initialize_logger(&matches).map_err(log_generic_error)?;
 
@@ -39,12 +40,15 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     debug!("Configuration: {:?}", configuration);
 
-    let ip = fetch_ip().map_err(log_ip_error)?;
+    let ip = fetch_ip().await.map_err(log_ip_error)?;
     debug!("Got IP: {}", &ip);
 
+    // todo: replace with array of futures and join_all
     for domain in configuration.domains {
         let _ = match domain.provider {
-            DomainProvider::Aws => handle_route53(&ip, &domain).map_err(log_handler_error),
+            DomainProvider::Aws => handle_route53(&ip, &domain)
+                .await
+                .map_err(log_handler_error),
         };
     }
 
