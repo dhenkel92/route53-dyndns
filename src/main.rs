@@ -7,12 +7,12 @@ mod ip;
 mod logger;
 mod route53;
 
-use crate::config::{load_config, DomainProvider, Domain};
+use crate::config::{load_config, Domain, DomainProvider};
 use crate::handler::{handle_route53, HandlerResult};
 use crate::ip::{fetch_ip, IPError};
 use clap_config::generate_clap_config;
-use logger::initialize_logger;
 use futures::future::join_all;
+use logger::initialize_logger;
 use std::error::Error;
 use std::path::Path;
 
@@ -49,12 +49,15 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let ip = fetch_ip().await.map_err(log_ip_error)?;
     debug!("Got IP: {}", &ip);
 
-    let futures = configuration.domains.iter().map(|domain| handle_domain(&ip, domain)).collect::<Vec<_>>();
+    let futures = configuration
+        .domains
+        .iter()
+        .map(|domain| handle_domain(&ip, domain))
+        .collect::<Vec<_>>();
     let results = join_all(futures).await;
     for result in results {
-        match result {
-            Err(err) => error!("{:?}", err),
-            _ => (),
+        if let Err(err) = result {
+            error!("{:?}", err);
         }
     }
 
