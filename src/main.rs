@@ -38,7 +38,11 @@ async fn handle_domain(ip: &str, domain: &Domain) -> HandlerResult {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     let clap_config = load_yaml!("clap-config.yml");
-    let matches = App::from(clap_config).get_matches();
+    let matches = App::from(clap_config)
+        .version(clap::crate_version!())
+        .author(clap::crate_authors!())
+        .about(&*("\n".to_owned() + clap::crate_description!()))
+        .get_matches();
 
     initialize_logger(&matches).map_err(log_generic_error)?;
 

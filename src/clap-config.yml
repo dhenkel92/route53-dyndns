@@ -1,7 +1,4 @@
 name: Route53 DynDns
-version: "0.1.0"
-author: Daniel Henkel <daniel@henkel.tech>
-about: ""
 args:
   - config-path:
       short: config
