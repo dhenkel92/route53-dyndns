@@ -1,6 +1,5 @@
 #![cfg_attr(feature = "strict", deny(warnings))]
 
-mod clap_config;
 mod config;
 mod handler;
 mod ip;
@@ -10,7 +9,7 @@ mod route53;
 use crate::config::{load_config, Domain, DomainProvider};
 use crate::handler::{handle_route53, HandlerResult};
 use crate::ip::{fetch_ip, IPError};
-use clap_config::generate_clap_config;
+use clap::{load_yaml, App};
 use futures::future::join_all;
 use logger::initialize_logger;
 use std::error::Error;
@@ -38,7 +37,9 @@ async fn handle_domain(ip: &str, domain: &Domain) -> HandlerResult {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let matches = generate_clap_config().get_matches();
+    let clap_config = load_yaml!("clap-config.yml");
+    let matches = App::from(clap_config).get_matches();
+
     initialize_logger(&matches).map_err(log_generic_error)?;
 
     let config_path = Path::new(matches.value_of("config-path").unwrap());

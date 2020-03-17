@@ -1,0 +1,30 @@
+name: Route53 DynDns
+version: "0.1.0"
+author: Daniel Henkel <daniel@henkel.tech>
+about: ""
+args:
+  - config-path:
+      short: config
+      long: config-path
+      value_name: config-path
+      help: Path to the configuration file.
+      takes_value: true
+      required: true
+  - log-file:
+      short: log
+      long: log-file
+      value_name: log-file
+      help: Path to log file.
+      takes_value: true
+  - verbosity:
+      short: v
+      long: verbosity
+      help: Log level verbosity.
+      takes_value: true
+      possible_values:
+        - debug
+        - info
+        - warn
+        - error
+      default_value: info
+
