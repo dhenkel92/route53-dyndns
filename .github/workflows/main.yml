@@ -1,3 +1,7 @@
+on:
+  push:
+    branches:
+      - '**'
 name: Route53 DynDns
 
 jobs:
