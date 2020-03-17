@@ -14,9 +14,17 @@ jobs:
         with:
           fetch-depth: 1
       - name: Format
-        run: cargo fmt
+        run: cargo fmt --all -- --check
       - name: Clippy
-        run: cargo clippy
+        run: cargo clippy --features "strict"
+  test:
+    name: Test
+    steps:
+      - uses: actions/checkout@master
+        with:
+          fetch-depth: 1
+      - name: Format
+        run: cargo test
   build:
     name: Build & Push
     runs-on: ubuntu-latest
