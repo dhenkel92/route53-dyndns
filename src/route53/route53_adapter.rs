@@ -1,9 +1,8 @@
 use crate::route53::types::Route53Result;
 use crate::route53::Route53Error;
-use rusoto_core::Region;
 use rusoto_route53::{
     Change, ChangeBatch, ChangeResourceRecordSetsRequest, HostedZone,
-    ListResourceRecordSetsRequest, ResourceRecord, ResourceRecordSet, Route53, Route53Client,
+    ListResourceRecordSetsRequest, ResourceRecord, ResourceRecordSet, Route53,
 };
 
 pub struct Route53Adapter<T>
@@ -13,14 +12,12 @@ where
     route53_client: T,
 }
 
-impl Route53Adapter<Route53Client> {
-    pub fn new(route53_client: Option<Route53Client>) -> Route53Adapter<Route53Client> {
-        // as Route53 is global and not bound to a region we have to use the "default"
-        // region, which is us-east-1 in this case.
-        let client = route53_client.unwrap_or_else(|| Route53Client::new(Region::UsEast1));
-        Route53Adapter {
-            route53_client: client,
-        }
+impl<T> Route53Adapter<T>
+where
+    T: Route53,
+{
+    pub fn new(route53_client: T) -> Route53Adapter<T> {
+        Route53Adapter { route53_client }
     }
 
     pub async fn find_hosted_zone_by_name(
