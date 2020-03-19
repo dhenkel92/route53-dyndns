@@ -10,7 +10,12 @@ impl Error for IPError {}
 
 impl std::fmt::Display for IPError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        // todo: properly format error
-        write!(f, "invalid first item to double")
+        let message: &str;
+
+        match self {
+            IPError::LibError(orig_err) => message = orig_err,
+        }
+
+        write!(f, "{}", message)
     }
 }

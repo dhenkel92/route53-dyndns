@@ -14,6 +14,14 @@ impl Error for Route53Error {}
 
 impl std::fmt::Display for Route53Error {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "invalid first item to double")
+        let message: &str;
+
+        match self {
+            Route53Error::LibError(orig_err) => message = orig_err,
+            Route53Error::RecordSetNotFound => message = "Record set was not found!",
+            Route53Error::HostedZoneNotFound => message = "Hosted zone was not found!",
+        }
+
+        write!(f, "{}", message)
     }
 }
