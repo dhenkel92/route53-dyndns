@@ -14,10 +14,10 @@ where
 }
 
 impl Route53Adapter<Route53Client> {
-    pub fn new() -> Route53Adapter<Route53Client> {
+    pub fn new(route53_client: Option<Route53Client>) -> Route53Adapter<Route53Client> {
         // as Route53 is global and not bound to a region we have to use the "default"
         // region, which is us-east-1 in this case.
-        let client = Route53Client::new(Region::UsEast1);
+        let client = route53_client.unwrap_or_else(|| Route53Client::new(Region::UsEast1));
         Route53Adapter {
             route53_client: client,
         }

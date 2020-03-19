@@ -14,7 +14,7 @@ fn extract_id_from_hz(hosted_zone: &HostedZone) -> String {
 }
 
 pub async fn handle_route53(ip: &str, domain: &Domain) -> HandlerResult {
-    let route53_adapter = Route53Adapter::new();
+    let route53_adapter = Route53Adapter::new(None);
     let hosted_zone = route53_adapter
         .find_hosted_zone_by_name(&domain.tld)
         .await
