@@ -1032,6 +1032,7 @@ dependencies = [
 name = "route53-dyndns"
 version = "0.1.0"
 dependencies = [
+ "async-trait",
  "cargo-husky",
  "clap",
  "futures",

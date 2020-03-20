@@ -3,7 +3,7 @@ use std::error::Error;
 
 pub type Route53Result<T> = Result<T, Route53Error>;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Route53Error {
     HostedZoneNotFound,
     RecordSetNotFound,

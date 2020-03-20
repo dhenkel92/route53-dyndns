@@ -1,3 +1,5 @@
+mod route53_client_mock;
+
 use crate::route53::types::Route53Result;
 use crate::route53::Route53Error;
 use rusoto_route53::{
@@ -136,5 +138,82 @@ where
             .map_err(|err| Route53Error::LibError(err.to_string()))?;
 
         Ok(record_sets_res.resource_record_sets)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    mod hosted_zone {
+        use super::super::route53_client_mock::{MockFailingRoute53Client, MockRoute53Client};
+        use crate::route53::{Route53Adapter, Route53Error};
+
+        #[tokio::test]
+        async fn find_hosted_zone_by_name() {
+            let mock_client = MockRoute53Client {};
+            let adapter = Route53Adapter::new(mock_client);
+            let zone = adapter.find_hosted_zone_by_name("foo").await.unwrap();
+            assert_eq!(zone.id, "foo_id");
+        }
+
+        #[tokio::test]
+        async fn cannot_find_hosted_zone() {
+            let mock_client = MockRoute53Client {};
+            let adapter = Route53Adapter::new(mock_client);
+            let err = adapter.find_hosted_zone_by_name("foo_bar").await.err();
+            assert_eq!(err.unwrap(), Route53Error::HostedZoneNotFound);
+        }
+
+        #[tokio::test]
+        async fn failing_route53_lib() {
+            let mock_client = MockFailingRoute53Client {};
+            let adapter = Route53Adapter::new(mock_client);
+            let err = adapter.find_hosted_zone_by_name("foo_bar").await.err();
+            assert_eq!(
+                err.unwrap(),
+                Route53Error::LibError("Failed to run blocking future".to_string())
+            );
+        }
+    }
+
+    mod record_sets {
+        use super::super::route53_client_mock::{MockFailingRoute53Client, MockRoute53Client};
+        use crate::route53::{Route53Adapter, Route53Error};
+
+        #[tokio::test]
+        async fn find_record_set_by_name() {
+            let mock_client = MockRoute53Client {};
+            let adapter = Route53Adapter::new(mock_client);
+            let record_set = adapter
+                .find_record_set_by_name("valid", "foo")
+                .await
+                .unwrap();
+            assert_eq!(record_set.name, "foo.bar.io");
+        }
+
+        #[tokio::test]
+        async fn cannot_find_record_set() {
+            let mock_client = MockRoute53Client {};
+            let adapter = Route53Adapter::new(mock_client);
+            let err = adapter
+                .find_record_set_by_name("invalid", "foo")
+                .await
+                .err()
+                .unwrap();
+            assert_eq!(err, Route53Error::RecordSetNotFound);
+        }
+
+        #[tokio::test]
+        async fn failing_route53_lib() {
+            let mock_client = MockFailingRoute53Client {};
+            let adapter = Route53Adapter::new(mock_client);
+            let err = adapter
+                .find_record_set_by_name("isso", "foo_bar")
+                .await
+                .err();
+            assert_eq!(
+                err.unwrap(),
+                Route53Error::LibError("Failed to run blocking future".to_string())
+            );
+        }
     }
 }
