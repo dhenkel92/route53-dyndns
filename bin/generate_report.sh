@@ -27,3 +27,7 @@ generate_report() {
 }
 
 (generate_report "route53_dyndns")
+
+# Upload coverage to codecov
+bash <(curl -s https://codecov.io/bash) &&
+echo "Uploaded code coverage"
