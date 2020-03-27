@@ -28,6 +28,4 @@ generate_report() {
 
 (generate_report "route53_dyndns")
 
-# Upload coverage to codecov
-bash <(curl -s https://codecov.io/bash) &&
-echo "Uploaded code coverage"
+# find $DIR/../target/cov -type f -exec sed -i -e "s#/root/isso/src/#/jaha/src#g" {} \;

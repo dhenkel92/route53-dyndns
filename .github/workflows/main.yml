@@ -30,7 +30,9 @@ jobs:
         run: |
           ./bin/create_test_bin.sh
           docker run --name coverage -i -v $(pwd):/root/route53 -e CODECOV_TOKEN=$CODECOV_TOKEN --security-opt seccomp=unconfined kcov/kcov bash -c "/root/route53/bin/generate_report.sh"
-      # - name: Upload Coverage
+          aws s3 sync ./target/cov s3://route53-kcov/
+          
+      # - name: Upload Covere
       #   env:
       #     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       #   run: bash <(curl -s https://codecov.io/bash)
