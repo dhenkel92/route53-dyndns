@@ -23,14 +23,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      # - name: Unit Tests
-      #   run: CARGO_HUSKY_DONT_INSTALL_HOOKS=true cargo test
       - name: Code Coverage
         run: |
           ./bin/create_test_bin.sh
-          docker run --name coverage -i -v $(pwd):/root/route53 --security-opt seccomp=unconfined kcov/kcov bash -c "/root/route53/bin/generate_report.sh"
-      - name: Upload Coverage
-        run: bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
+          docker run --name coverage -i -v $GITHUB_WORKSPACE:$GITHUB_WORKSPACE -e GITHUB_WORKSPACE=$GITHUB_WORKSPACE -e CODECOV_TOKEN=$CODECOV_TOKEN --security-opt seccomp=unconfined kcov/kcov bash -c "$GITHUB_WORKSPACE/bin/generate_report.sh"
+      - name: Upload Coverage Report
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: bash <(curl -s https://codecov.io/bash)
   build:
     name: Build & Push
     runs-on: ubuntu-latest
