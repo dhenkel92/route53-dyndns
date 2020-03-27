@@ -15,12 +15,13 @@ generate_report() {
             continue
         fi        # Create directory for the coverage report
 
-        mkdir -p $DIR/../target/cov/$crate        # Create coverage report
+        mkdir -p $DIR/../target/cov/
 
         kcov\
             --exclude-line=unreachable \
+            --exclude-pattern=/.cargo,/usr/lib \
             --exclude-region='/* Exclude from code coverage - begin */:/* Exclude from code coverage - end */' \
-            $DIR/../target/cov/$crate \
+            $DIR/../target/cov \
             ${test_executable}
     done
 }
