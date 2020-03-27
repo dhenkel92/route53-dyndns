@@ -24,8 +24,6 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Code Coverage
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: |
           ./bin/create_test_bin.sh
           docker run --name coverage -i -v $GITHUB_WORKSPACE:$GITHUB_WORKSPACE -e GITHUB_WORKSPACE=$GITHUB_WORKSPACE -e CODECOV_TOKEN=$CODECOV_TOKEN --security-opt seccomp=unconfined kcov/kcov bash -c "$GITHUB_WORKSPACE/bin/generate_report.sh"
