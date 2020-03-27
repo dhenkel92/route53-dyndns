@@ -27,6 +27,9 @@ jobs:
       - name: Code Coverage
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: eu-central-1
         run: |
           ./bin/create_test_bin.sh
           docker run --name coverage -i -v $(pwd):/root/route53 -e CODECOV_TOKEN=$CODECOV_TOKEN --security-opt seccomp=unconfined kcov/kcov bash -c "/root/route53/bin/generate_report.sh"
