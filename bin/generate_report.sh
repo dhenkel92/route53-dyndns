@@ -21,7 +21,7 @@ generate_report() {
             --include-pattern=react/$crate\
             --exclude-line=unreachable\
             --exclude-region='/* Exclude from code coverage - begin */:/* Exclude from code coverage - end */'\
-            ../test-coverage/$crate\
+            ../cov/$crate\
             ${test_executable}
     done
 }
