@@ -1,8 +1,9 @@
 use std::error::Error;
 use std::fmt::Formatter;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum HandlerError {
+    RecordNotFound,
     ProviderError(String),
 }
 
@@ -13,6 +14,7 @@ impl std::fmt::Display for HandlerError {
         let message: &str;
 
         match self {
+            HandlerError::RecordNotFound => message = "Record was not found!",
             HandlerError::ProviderError(orig_err) => message = orig_err,
         }
 

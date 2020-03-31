@@ -7,7 +7,7 @@ mod logger;
 mod route53;
 
 use crate::config::{load_config, Domain, DomainProvider};
-use crate::handler::{handle_route53, HandlerResult};
+use crate::handler::{HandlerResult, Route53Handler};
 use crate::ip::{fetch_ip, IPError};
 use clap::{load_yaml, App};
 use futures::future::join_all;
@@ -29,10 +29,9 @@ fn log_ip_error(err: IPError) -> IPError {
 }
 
 async fn handle_domain(ip: &str, domain: &Domain) -> HandlerResult {
-    let handler = match domain.provider {
-        DomainProvider::Aws => handle_route53(ip, domain),
-    };
-    handler.await
+    match domain.provider {
+        DomainProvider::Aws => Route53Handler::new().handle(ip, domain).await,
+    }
 }
 
 #[tokio::main]
