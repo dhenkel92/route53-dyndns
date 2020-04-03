@@ -60,13 +60,13 @@ jobs:
           key: ${{ runner.os }}-cargo-build-target-test-${{ hashFiles('**/Cargo.lock') }}
       - name: Code Coverage
         run: |
-          ./bin/create_test_bin.sh
+          ./.github/scripts/create_test_bin.sh
           docker run --name coverage -i \
             -v $GITHUB_WORKSPACE:$GITHUB_WORKSPACE \
             -e GITHUB_WORKSPACE=$GITHUB_WORKSPACE \
             -e CODECOV_TOKEN=$CODECOV_TOKEN \
             --security-opt seccomp=unconfined \
-            kcov/kcov bash -c "$GITHUB_WORKSPACE/bin/generate_report.sh"
+            kcov/kcov bash -c "$GITHUB_WORKSPACE/.github/scripts/generate_report.sh"
       - name: Upload Coverage Report
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
