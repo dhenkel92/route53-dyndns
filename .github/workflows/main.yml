@@ -71,8 +71,8 @@ jobs:
     name: Functional Tests
     runs-on: ubuntu-latest
     env:
-      TEST_BASE_DOMAIN: henkel.tech
-      TEST_DOMAIN: ${{ github.sha }}.dyndns.henkel.tech
+      TEST_BASE_DOMAIN: henkel.tech.
+      TEST_DOMAIN: ${{ github.sha }}.dyndns.$TEST_BASE_DOMAIN
     needs:
       - build
     steps:
