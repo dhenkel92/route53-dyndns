@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: out
         run: |
-          echo "das ist: ${{ github.sha }}"
+          echo "das ist: ${{ github.ref }}"
   style:
     name: Style
     runs-on: ubuntu-latest
