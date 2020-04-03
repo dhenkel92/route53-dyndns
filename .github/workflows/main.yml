@@ -93,5 +93,5 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.FT_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: eu-central-1
         run: |
-          chmod + x ./route53-dyndns
+          chmod +x ./route53-dyndns
           ./route53-dyndns -c ./test-config.yml
