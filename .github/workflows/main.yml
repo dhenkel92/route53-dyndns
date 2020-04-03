@@ -9,15 +9,6 @@ on:
 name: Route53 DynDns
 
 jobs:
-  isso:
-    name: Isso
-    runs-on: ubuntu-latest
-    steps:
-      - name: out
-        run: |
-          echo "das ist: "
-          echo "head_ref: ${{ github.head_ref }}"
-          echo "base_ref: ${{ github.base_ref }}"
   style:
     name: Style
     runs-on: ubuntu-latest
@@ -43,7 +34,7 @@ jobs:
   build:
     name: Build & Push
     runs-on: ubuntu-latest
-    if: ${{ github.ref }} == "master"
+    if: github.ref == 'master'
     env:
       DOCKER_IMAGE: snapper/route53-dyndns
     needs:
