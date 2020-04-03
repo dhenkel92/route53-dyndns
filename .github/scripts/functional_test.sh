@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set -e
+set -ex
 
 # Create test configuration
 cat <<EOF >./test-config.yml
