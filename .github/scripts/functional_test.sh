@@ -42,10 +42,11 @@ EOF
 aws route53 change-resource-record-sets --hosted-zone-id $hosted_zone_id --change-batch file://./delete.json
 
 # Test if IP was properly set
+dns_ip=$(dig +short $TEST_DOMAIN)
 aws_ip=$(echo "$record_set" | jq -r '.ResourceRecords[0].Value')
-internal_ip=$(curl -s ifconfig.so)
+real_ip=$(curl -s ifconfig.so)
 
-if [ "$aws_ip" != "$internal_ip" ]; then
+if [ "$aws_ip" != "$real_ip" ] || [ "$dns_ip" != "$real_ip" ]; then
   exit 1
 fi
 
