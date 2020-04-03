@@ -32,7 +32,7 @@ pub fn initialize_logger(args: &ArgMatches) -> Result<(), Box<dyn Error>> {
         CombinedLogger::init(vec![TermLogger::new(
             level_filter,
             Config::default(),
-            TerminalMode::Mixed,
+            TerminalMode::Stdout,
         )
         .unwrap()])?;
     }
