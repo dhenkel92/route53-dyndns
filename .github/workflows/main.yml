@@ -59,8 +59,33 @@ jobs:
         # todo: only push when master
         # only push the container if it was build on master
         # if: github.ref == 'ref/head/master'
-        if: github.ref == 'master'
         run: |
           docker tag $DOCKER_IMAGE:$GITHUB_RUN_ID $DOCKER_IMAGE:latest
           docker push $DOCKER_IMAGE:$GITHUB_RUN_ID
           docker push $DOCKER_IMAGE:latest
+      - uses: actions/upload-artifact@master
+        with:
+          name: release-build
+          path: target/release/route53-dyndns
+  functional_tests:
+    name: Functional Tests
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_IMAGE: snapper/route53-dyndns
+    needs:
+      - build
+    steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: release-build
+          path: /root/route53_dyndns
+      - name: Create Config
+        run: |
+          cat <<EOF > /root/test-config.yml
+          domains:
+            - provider: aws
+              tld: henkel.tech
+              domain: ${{ github.sha }}.dyndns.henkel.tech
+          EOF
+      - name: Test Executable
+        run: /root/route53_dyndns -c /root/test-config.yml
