@@ -9,41 +9,41 @@ on:
 name: Route53 DynDns
 
 jobs:
-#  style:
-#    name: Style
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@master
-#      - name: Format
-#        run: cargo fmt --all -- --check
-#      - name: Clippy
-#        run: cargo clippy --features "strict"
-#  test:
-#    name: Test
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@master
-#      - name: Code Coverage
-#        run: |
-#          ./bin/create_test_bin.sh
-#          docker run --name coverage -i \
-#            -v $GITHUB_WORKSPACE:$GITHUB_WORKSPACE \
-#            -e GITHUB_WORKSPACE=$GITHUB_WORKSPACE \
-#            -e CODECOV_TOKEN=$CODECOV_TOKEN \
-#            --security-opt seccomp=unconfined \
-#            kcov/kcov bash -c "$GITHUB_WORKSPACE/bin/generate_report.sh"
-#      - name: Upload Coverage Report
-#        env:
-#          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-#        run: bash <(curl -s https://codecov.io/bash)
+  style:
+    name: Style
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Format
+        run: cargo fmt --all -- --check
+      - name: Clippy
+        run: cargo clippy --features "strict"
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Code Coverage
+        run: |
+          ./bin/create_test_bin.sh
+          docker run --name coverage -i \
+            -v $GITHUB_WORKSPACE:$GITHUB_WORKSPACE \
+            -e GITHUB_WORKSPACE=$GITHUB_WORKSPACE \
+            -e CODECOV_TOKEN=$CODECOV_TOKEN \
+            --security-opt seccomp=unconfined \
+            kcov/kcov bash -c "$GITHUB_WORKSPACE/bin/generate_report.sh"
+      - name: Upload Coverage Report
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: bash <(curl -s https://codecov.io/bash)
   build:
     name: Build & Push
     runs-on: ubuntu-latest
     env:
       DOCKER_IMAGE: snapper/route53-dyndns
-#    needs:
-#      - style
-#      - test
+    needs:
+      - style
+      - test
     steps:
       - uses: actions/checkout@master
       - name: Cache cargo build
@@ -58,16 +58,16 @@ jobs:
           PASSWORD: ${{ secrets.DOCKER_PW }}
       - name: Build Project
         run: cargo build --release --features "strict"
-#      - name: Build Docker Container
-#        run: docker build -t $DOCKER_IMAGE:$GITHUB_RUN_ID .
-#      - name: Push Container
-#        # todo: only push when master
-#        # only push the container if it was build on master
-#        # if: github.ref == 'ref/head/master'
-#        run: |
-#          docker tag $DOCKER_IMAGE:$GITHUB_RUN_ID $DOCKER_IMAGE:latest
-#          docker push $DOCKER_IMAGE:$GITHUB_RUN_ID
-#          docker push $DOCKER_IMAGE:latest
+      - name: Build Docker Container
+        run: docker build -t $DOCKER_IMAGE:$GITHUB_RUN_ID .
+      - name: Push Container
+        # todo: only push when master
+        # only push the container if it was build on master
+        # if: github.ref == 'ref/head/master'
+        run: |
+          docker tag $DOCKER_IMAGE:$GITHUB_RUN_ID $DOCKER_IMAGE:latest
+          docker push $DOCKER_IMAGE:$GITHUB_RUN_ID
+          docker push $DOCKER_IMAGE:latest
       - uses: actions/upload-artifact@master
         with:
           name: release-build
