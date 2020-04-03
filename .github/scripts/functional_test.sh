@@ -15,7 +15,10 @@ chmod +x ./route53-dyndns
 ./route53-dyndns -c ./test-config.yml
 
 # Wait for the Record to stabilize
-sleep 15
+until [ "$(dig +short $TEST_DOMAIN)" != "" ]
+do
+  sleep 5
+done
 
 # Delete recently created Resource Record Set
 hosted_zone_id=$(aws route53 list-hosted-zones | jq -r --arg TEST_BASE_DOMAIN "$TEST_BASE_DOMAIN" '.HostedZones[] | select(.Name == $TEST_BASE_DOMAIN) | .Id')
