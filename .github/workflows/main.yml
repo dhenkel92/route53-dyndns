@@ -78,10 +78,10 @@ jobs:
       - uses: actions/download-artifact@master
         with:
           name: release-build
-          path: ~/route53_dyndns
+          path: ./route53_dyndns
       - name: Create Config
         run: |
-          cat <<EOF > ~/test-config.yml
+          cat <<EOF > ./test-config.yml
           domains:
             - provider: aws
               tld: henkel.tech
@@ -92,4 +92,4 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.FT_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.FT_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: eu-central-1
-        run: ~/route53_dyndns -c ~/test-config.yml
+        run: ./route53_dyndns -c ./test-config.yml
