@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set -ex
+set -e
 
 # Create test configuration
 cat <<EOF >./test-config.yml
@@ -39,7 +39,7 @@ aws route53 change-resource-record-sets --hosted-zone-id $hosted_zone_id --chang
 aws_ip=$(echo "$record_set" | jq -r '.ResourceRecords[0].Value')
 internal_ip=$(curl -s ifconfig.so)
 
-if [ "$aws_ip" -ne "$internal_ip" ]; then
+if [ "$aws_ip" != "$internal_ip" ]; then
   exit 1
 fi
 
