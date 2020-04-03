@@ -14,28 +14,64 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+      - name: Fix Cargo Registry Cache Permissions
+        run: sudo chown -R $(whoami):$(id -ng) ~/.cargo/
+      - name: Cache cargo registry
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-style-${{ hashFiles('**/Cargo.lock') }}
+      - name: Cache cargo index
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-index-style-${{ hashFiles('**/Cargo.lock') }}
+      - name: Cache cargo build
+        uses: actions/cache@v1
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-target-style-${{ hashFiles('**/Cargo.lock') }}
       - name: Format
         run: cargo fmt --all -- --check
       - name: Clippy
         run: cargo clippy --features "strict"
+
   test:
     name: Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+      - name: Fix Cargo Registry Cache Permissions
+        run: sudo chown -R $(whoami):$(id -ng) ~/.cargo/
+      - name: Cache cargo registry
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-test-${{ hashFiles('**/Cargo.lock') }}
+      - name: Cache cargo index
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-index-test-${{ hashFiles('**/Cargo.lock') }}
+      - name: Cache cargo build
+        uses: actions/cache@v1
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-target-test-${{ hashFiles('**/Cargo.lock') }}
       - name: Code Coverage
         run: |
-          ./bin/create_test_bin.sh
+          ./.github/scripts/create_test_bin.sh
           docker run --name coverage -i \
             -v $GITHUB_WORKSPACE:$GITHUB_WORKSPACE \
             -e GITHUB_WORKSPACE=$GITHUB_WORKSPACE \
             -e CODECOV_TOKEN=$CODECOV_TOKEN \
             --security-opt seccomp=unconfined \
-            kcov/kcov bash -c "$GITHUB_WORKSPACE/bin/generate_report.sh"
+            kcov/kcov bash -c "$GITHUB_WORKSPACE/.github/scripts/generate_report.sh"
       - name: Upload Coverage Report
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: bash <(curl -s https://codecov.io/bash)
+
   build:
     name: Build & Push
     runs-on: ubuntu-latest
@@ -46,11 +82,23 @@ jobs:
       - test
     steps:
       - uses: actions/checkout@master
+      - name: Fix Cargo Registry Cache Permissions
+        run: sudo chown -R $(whoami):$(id -ng) ~/.cargo/
+      - name: Cache cargo registry
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-build-${{ hashFiles('**/Cargo.lock') }}
+      - name: Cache cargo index
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-index-build-${{ hashFiles('**/Cargo.lock') }}
       - name: Cache cargo build
         uses: actions/cache@v1
         with:
           path: target
-          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-build-target-build-${{ hashFiles('**/Cargo.lock') }}
       - name: Authenticate
         run: ./.github/scripts/auth.sh
         env:
@@ -72,6 +120,7 @@ jobs:
         with:
           name: release-build
           path: target/release/route53-dyndns
+
   functional_tests:
     name: Functional Tests
     runs-on: ubuntu-latest
