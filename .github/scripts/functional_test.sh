@@ -18,7 +18,7 @@ chmod +x ./route53-dyndns
 sleep 15
 
 # Delete recently created Resource Record Set
-hosted_zone_id=$(aws route53 list-hosted-zones | jq --arg TEST_BASE_DOMAIN "$TEST_BASE_DOMAIN" '.HostedZones[] | select(.Name == $TEST_BASE_DOMAIN) | .Id')
+hosted_zone_id=$(aws route53 list-hosted-zones | jq -r --arg TEST_BASE_DOMAIN "$TEST_BASE_DOMAIN" '.HostedZones[] | select(.Name == $TEST_BASE_DOMAIN) | .Id')
 record_set=$(aws route53 list-resource-record-sets --hosted-zone-id $hosted_zone_id | jq --arg TEST_DOMAIN "$TEST_DOMAIN" '.ResourceRecordSets[] | select(.Name == $TEST_DOMAIN)')
 
 cat <<EOF >./delete.json
@@ -36,7 +36,7 @@ EOF
 aws route53 change-resource-record-sets --hosted-zone-id $hosted_zone_id --change-batch file://./delete.json
 
 # Test if IP was properly set
-aws_ip=$(echo "$record_set" | jq '.ResourceRecords[0].Value')
+aws_ip=$(echo "$record_set" | jq -r '.ResourceRecords[0].Value')
 internal_ip=$(curl -s ifconfig.so)
 
 if [ "$aws_ip" -ne "$internal_ip" ]; then
