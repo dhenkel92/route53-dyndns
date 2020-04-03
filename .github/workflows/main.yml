@@ -92,8 +92,24 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.FT_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.FT_AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: eu-central-1
+          HOSTED_ZONE_ID: ${{ secrets.HOSTED_ZONE_ID }}
         run: |
           set -ex
 
           chmod +x ./route53-dyndns
           ./route53-dyndns -c ./test-config.yml
+
+          record_set=$(aws route53 list-resource-record-sets --hosted-zone-id $HOSTED_ZONE_ID | jq '.ResourceRecordSets[] | select(.Name == "${{ github.sha }}.dyndns.henkel.tech.")')
+          cat <<EOF > ./delete.json
+          {
+            "Comment": "Delete CI entry",
+            "Changes": [
+              {
+                "Action": "DELETE",
+                "ResourceRecordSet": $record_set
+              }
+            ]
+          }
+          EOF
+
+          aws route53 change-resource-record-sets --hosted-zone-id $HOSTED_ZONE_ID --change-batch file://./delete.json
