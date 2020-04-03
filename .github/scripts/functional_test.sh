@@ -14,6 +14,9 @@ EOF
 chmod +x ./route53-dyndns
 ./route53-dyndns -c ./test-config.yml
 
+# Give AWS some time to publish the new DNS entry
+sleep 30
+
 # Wait for the Record to stabilize
 until [ "$(dig +short $TEST_DOMAIN)" != "" ]
 do
