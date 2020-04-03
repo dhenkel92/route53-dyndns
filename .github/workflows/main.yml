@@ -72,7 +72,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TEST_BASE_DOMAIN: henkel.tech.
-      TEST_DOMAIN: ${{ github.sha }}.dyndns.$TEST_BASE_DOMAIN
+      TEST_DOMAIN: ${{ github.sha }}.dyndns.henkel.tech.
     needs:
       - build
     steps:
