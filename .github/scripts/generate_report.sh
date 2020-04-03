@@ -2,26 +2,27 @@
 
 set -e
 
+# Go to project root folder
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+cd $DIR/../../
 
 generate_report() {
     local crate=$1
-    cd $DIR/../../target/debug/deps/
-    for file in *-*.d; do
+    for file in ./target/debug/deps/*-*.d; do
         local test_executable=${file%.*}
-        local current=$(echo $file | cut -d- -f1)
+        local current=$(echo $file | cut -d- -f1 | awk -F/ '{print $NF}')
 
         if ! [ "$current" = "$crate" ]; then
             continue
         fi        # Create directory for the coverage report
 
-        mkdir -p $DIR/../../target/cov/
+        mkdir -p ./target/cov/
 
         kcov\
             --exclude-line=unreachable \
             --exclude-pattern=/.cargo,/usr/lib \
             --exclude-region='/* Exclude from code coverage - begin */:/* Exclude from code coverage - end */' \
-            $DIR/../../target/cov \
+            ./target/cov \
             ${test_executable}
     done
 }
