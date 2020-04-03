@@ -43,7 +43,7 @@ jobs:
   build:
     name: Build & Push
     runs-on: ubuntu-latest
-    if: ${{ github.base_ref }} == "master"
+    if: ${{ github.ref }} == "master"
     env:
       DOCKER_IMAGE: snapper/route53-dyndns
     needs:
