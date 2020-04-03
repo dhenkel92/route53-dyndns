@@ -1,6 +1,6 @@
 use clap::ArgMatches;
 use log::LevelFilter;
-use simplelog::{CombinedLogger, Config, TermLogger, TerminalMode, WriteLogger};
+use simplelog::{CombinedLogger, Config, SimpleLogger, WriteLogger};
 use std::fs::File;
 use std::{error::Error, path::Path};
 
@@ -21,7 +21,7 @@ pub fn initialize_logger(args: &ArgMatches) -> Result<(), Box<dyn Error>> {
     if let Some(log_file) = args.value_of("log-file") {
         let log_file_path = Path::new(log_file);
         CombinedLogger::init(vec![
-            TermLogger::new(level_filter, Config::default(), TerminalMode::Mixed).unwrap(),
+            SimpleLogger::new(level_filter, Config::default()),
             WriteLogger::new(
                 level_filter,
                 Config::default(),
@@ -29,12 +29,7 @@ pub fn initialize_logger(args: &ArgMatches) -> Result<(), Box<dyn Error>> {
             ),
         ])?;
     } else {
-        CombinedLogger::init(vec![TermLogger::new(
-            level_filter,
-            Config::default(),
-            TerminalMode::Mixed,
-        )
-        .unwrap()])?;
+        CombinedLogger::init(vec![SimpleLogger::new(level_filter, Config::default())])?;
     }
 
     Ok(())

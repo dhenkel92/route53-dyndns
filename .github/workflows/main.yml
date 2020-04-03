@@ -26,7 +26,12 @@ jobs:
       - name: Code Coverage
         run: |
           ./bin/create_test_bin.sh
-          docker run --name coverage -i -v $GITHUB_WORKSPACE:$GITHUB_WORKSPACE -e GITHUB_WORKSPACE=$GITHUB_WORKSPACE -e CODECOV_TOKEN=$CODECOV_TOKEN --security-opt seccomp=unconfined kcov/kcov bash -c "$GITHUB_WORKSPACE/bin/generate_report.sh"
+          docker run --name coverage -i \
+            -v $GITHUB_WORKSPACE:$GITHUB_WORKSPACE \
+            -e GITHUB_WORKSPACE=$GITHUB_WORKSPACE \
+            -e CODECOV_TOKEN=$CODECOV_TOKEN \
+            --security-opt seccomp=unconfined \
+            kcov/kcov bash -c "$GITHUB_WORKSPACE/bin/generate_report.sh"
       - name: Upload Coverage Report
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -41,6 +46,11 @@ jobs:
       - test
     steps:
       - uses: actions/checkout@master
+      - name: Cache cargo build
+        uses: actions/cache@v1
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
       - name: Authenticate
         run: ./.github/scripts/auth.sh
         env:
@@ -54,8 +64,31 @@ jobs:
         # todo: only push when master
         # only push the container if it was build on master
         # if: github.ref == 'ref/head/master'
-        if: github.ref == 'master'
         run: |
           docker tag $DOCKER_IMAGE:$GITHUB_RUN_ID $DOCKER_IMAGE:latest
           docker push $DOCKER_IMAGE:$GITHUB_RUN_ID
           docker push $DOCKER_IMAGE:latest
+      - uses: actions/upload-artifact@master
+        with:
+          name: release-build
+          path: target/release/route53-dyndns
+  functional_tests:
+    name: Functional Tests
+    runs-on: ubuntu-latest
+    env:
+      TEST_BASE_DOMAIN: henkel.tech.
+      TEST_DOMAIN: ${{ github.sha }}.dyndns.henkel.tech.
+    needs:
+      - build
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/download-artifact@master
+        with:
+          name: release-build
+          path: ./
+      - name: Test Route53
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.FT_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.FT_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: eu-central-1
+        run: ./.github/scripts/functional_test.sh
