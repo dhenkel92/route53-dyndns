@@ -16,6 +16,8 @@ jobs:
       - name: out
         run: |
           echo "das ist: ${{ github.ref }}"
+          echo "head_ref: ${{ github.head_ref }}"
+          echo "base_ref: ${{ github.base_ref }}"
   style:
     name: Style
     runs-on: ubuntu-latest
