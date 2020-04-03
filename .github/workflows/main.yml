@@ -34,7 +34,6 @@ jobs:
   build:
     name: Build & Push
     runs-on: ubuntu-latest
-    if: github.ref == 'master'
     env:
       DOCKER_IMAGE: snapper/route53-dyndns
     needs:
@@ -55,6 +54,7 @@ jobs:
         # todo: only push when master
         # only push the container if it was build on master
         # if: github.ref == 'ref/head/master'
+        if: github.ref == 'master'
         run: |
           docker tag $DOCKER_IMAGE:$GITHUB_RUN_ID $DOCKER_IMAGE:latest
           docker push $DOCKER_IMAGE:$GITHUB_RUN_ID
