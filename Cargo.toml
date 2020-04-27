@@ -10,7 +10,7 @@ strict = []
 
 [dependencies]
 log = "0.4"
-simplelog = "0.7.5"
+simplelog = "0.7.6"
 serde = { version = "1.0.105", features = ["derive"] }
 serde_yaml = "0.8.11"
 clap = {version = "2.33.0", features = ["yaml"]}
