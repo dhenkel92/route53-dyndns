@@ -17,7 +17,7 @@ clap = {version = "2.33.0", features = ["yaml"]}
 rusoto_core = "0.43.0"
 rusoto_route53 = "0.43.0"
 reqwest = { version = "0.10.4", features = ["blocking"] }
-tokio = { version = "0.2.15", features = ["full"] }
+tokio = { version = "0.2.20", features = ["full"] }
 futures = "0.3.4"
 async-trait = "0.1.29"
 
