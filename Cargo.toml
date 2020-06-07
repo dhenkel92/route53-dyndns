@@ -16,7 +16,7 @@ serde_yaml = "0.8.11"
 clap = {version = "2.33.0", features = ["yaml"]}
 rusoto_core = "0.44.0"
 rusoto_route53 = "0.43.0"
-reqwest = { version = "0.10.4", features = ["blocking"] }
+reqwest = { version = "0.10.6", features = ["blocking"] }
 tokio = { version = "0.2.20", features = ["full"] }
 futures = "0.3.4"
 async-trait = "0.1.33"
