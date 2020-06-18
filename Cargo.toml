@@ -12,14 +12,14 @@ strict = []
 log = "0.4"
 simplelog = "0.8.0"
 serde = { version = "1.0.112", features = ["derive"] }
-serde_yaml = "0.8.12"
+serde_yaml = "0.8.13"
 clap = {version = "2.33.1", features = ["yaml"]}
 rusoto_core = "0.44.0"
 rusoto_route53 = "0.44.0"
 reqwest = { version = "0.10.6", features = ["blocking"] }
 tokio = { version = "0.2.21", features = ["full"] }
 futures = "0.3.5"
-async-trait = "0.1.33"
+async-trait = "0.1.35"
 
 [dev-dependencies.cargo-husky]
 version = "1.5.0"
