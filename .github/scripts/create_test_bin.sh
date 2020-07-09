@@ -9,5 +9,5 @@ rustup default nightly
 
 # Compile test
 export CARGO_INCREMENTAL=0
-export RUSTFLAGS="-Zprofile -Clink-dead-code -Cpanic=abort -Zpanic_abort_tests"
+export RUSTFLAGS="-Zprofile -Clink-dead-code"
 cargo test --no-run
