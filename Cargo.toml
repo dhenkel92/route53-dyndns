@@ -19,7 +19,7 @@ rusoto_route53 = "0.44.0"
 reqwest = { version = "0.10.8", features = ["blocking"] }
 tokio = { version = "0.2.22", features = ["full"] }
 futures = "0.3.6"
-async-trait = "0.1.41"
+async-trait = "0.1.48"
 
 [dev-dependencies.cargo-husky]
 version = "1.5.0"
