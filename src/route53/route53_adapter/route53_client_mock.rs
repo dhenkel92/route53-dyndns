@@ -363,6 +363,7 @@ impl Route53 for MockRoute53Client {
         unimplemented!()
     }
 
+    #[allow(clippy::field_reassign_with_default)]
     async fn list_hosted_zones(
         &self,
         _input: ListHostedZonesRequest,
