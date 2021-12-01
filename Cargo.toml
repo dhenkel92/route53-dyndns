@@ -13,7 +13,7 @@ log = "0.4"
 simplelog = "0.8.0"
 serde = { version = "1.0.117", features = ["derive"] }
 serde_yaml = "0.8.13"
-clap = {version = "2.33.3", features = ["yaml"]}
+clap = {version = "2.34.0", features = ["yaml"]}
 rusoto_core = "0.44.0"
 rusoto_route53 = "0.44.0"
 reqwest = { version = "0.10.8", features = ["blocking"] }
